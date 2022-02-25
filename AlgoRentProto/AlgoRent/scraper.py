@@ -47,14 +47,16 @@ def get_coords(address):
 	resp_json_payload = (location.latitude, location.longitude)
 	return resp_json_payload
 
-def get_complete_addr_link(address): #format of address : {"country": ,"state": , "city": , "zip": }
+def get_complete_addr_link(address): #format of address : "country" "state" "city"  "zip": }
 	try:
 		geolocator = Nominatim(user_agent="html")
-		country = address["country"]
-		state = address["state"]
-		city = address["city"]
-		zip = address["zip"]
-		possible_addr = country + " " + state + " " + city + " " + zip
+		possible_addr = address
+		if(not isinstance(address,str)):
+			country = address["country"]
+			state = address["state"]
+			city = address["city"]
+			zip = address["zip"]
+			possible_addr = country + " " + state + " " + city + " " + zip
 		location = geolocator.geocode(possible_addr, addressdetails=True, language="en", timeout=9000)
 		print("The Complete Address is: ", location.raw['address'])
 		return location.raw['address']
@@ -62,7 +64,12 @@ def get_complete_addr_link(address): #format of address : {"country": ,"state": 
 		print("Error Encountered: ", err)
 		return None #Means Address is invalid
 
-def house_info_from_address(address): #format of address : {"country": ,"state": , "city": , "zip": }
+def house_info_from_address(address): #Initial: "Country, State, City, Zip" format of address : {"country": ,"state": , "city": , "zip": }
+	if(isinstance(address,str)):
+		#convert to dict
+		stripped_address = address.replace(",","").replace("  ", " ") #properly format string
+		print("Address is: ",stripped_address) 
+		address = stripped_address
 	comp_address = get_complete_addr_link(address)
 	state = comp_address["state"].replace(" ", "+")
 	city = comp_address["city"].replace(" ", "+")
@@ -70,7 +77,7 @@ def house_info_from_address(address): #format of address : {"country": ,"state":
 	BASE_URL = "https://www.remax.com"
 	EXTENDED_URL = "/homes-for-sale/"+state+"/"+city+"/zip/"+zip
 	SEARCH_URL = BASE_URL+EXTENDED_URL
-	print("Search Link: ", SEARCH_URL)
+	#print("Search Link: ", SEARCH_URL)
 	display_page_links = scrape_remax(SEARCH_URL)
 	#print("Links Obtained: ", display_page_links)
 	house_info = []
@@ -98,3 +105,5 @@ if(len(args) > 0):
 #scrape_remax("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
 #Value: KEY WORD: value:"$
 #Address: <title> tag -> |
+
+#house_info_from_address("US, NY, Buffalo, 14212")
