@@ -43,7 +43,7 @@
           <div class="col-md-12 mb-2">
             <div class="form-group">
               <label class="pb-2" for="Type">Address</label>
-              <input type="text" name="home_search" class="form-control form-control-lg form-control-a" placeholder="State, City, Zip">
+              <input type="text" name="home_search" class="form-control form-control-lg form-control-a" placeholder="State - NY, City, Zip">
             </div>
           </div>
           <!--<div class="col-md-6 mb-2">
@@ -178,8 +178,8 @@
   <div class="intro intro-carousel swiper position-relative">
 
     <div class="swiper-wrapper">
-
-      <div class="swiper-slide carousel-item-a intro-item bg-image" style="background-image: url( {% static 'AlgoRent/assets/img/slide-1.jpg' %} )">
+      {% for house in house_info %}
+      <div class="swiper-slide carousel-item-a intro-item bg-image" style="background-image: url( {{house.image.0}} )">
         <div class="overlay overlay-a"></div>
         <div class="intro-content display-table">
           <div class="table-cell">
@@ -187,12 +187,9 @@
               <div class="row">
                 <div class="col-lg-8">
                   <div class="intro-body">
-                    <p class="intro-title-top">Doral, Florida
-                      <br> 78345
-                    </p>
                     <h1 class="intro-title mb-4 ">
-                      <span class="color-b">204 </span> Mount
-                      <br> Olive Road Two
+                      <span class="color-b">204 </span> 
+                      <br>{{house.address}}
                     </h1>
                     <p class="intro-subtitle intro-price">
                       <a href="#"><span class="price-a">rent | $ 12.000</span></a>
@@ -204,6 +201,8 @@
           </div>
         </div>
       </div>
+      {% endfor %}
+      <!--
       <div class="swiper-slide carousel-item-a intro-item bg-image" style="background-image: url( {% static 'AlgoRent/assets/img/slide-2.jpg' %} )">
         <div class="overlay overlay-a"></div>
         <div class="intro-content display-table">
@@ -253,7 +252,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div>-->
     </div>
     <div class="swiper-pagination"></div>
   </div><!-- End Intro Section -->
