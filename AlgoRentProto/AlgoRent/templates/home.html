@@ -137,19 +137,16 @@
         <ul class="navbar-nav">
 
           <li class="nav-item">
-            <a class="nav-link active" href=" {% static 'AlgoRent/index.html' %} ">Home</a>
+            <a class="nav-link active" href="#">Home</a>
+          </li>
+
+          
+          <li class="nav-item">
+            <a class="nav-link " href="#property">Property</a>
           </li>
 
           <li class="nav-item">
-            <a class="nav-link " href=" {% static 'AlgoRent/about.html' %} ">About</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link " href=" {% static 'AlgoRent/property-grid.html' %} ">Property</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link " href=" {% static 'AlgoRent/blog-grid.html' %} ">Blog</a>
+            <a class="nav-link " href="#bottom">About</a>
           </li>
 
           <li class="nav-item dropdown">
@@ -162,7 +159,7 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link " href=" {% static 'AlgoRent/contact.html' %} ">Contact</a>
+            <a class="nav-link " href=" #bottom ">Contact</a>
           </li>
         </ul>
       </div>
@@ -307,7 +304,7 @@
                 <h2 class="title-a">Latest Properties</h2>
               </div>
               <div class="title-link">
-                <a href=" {% static 'AlgoRent/property-grid.html' %} ">All Property
+                <a href=" {% static 'AlgoRent/property-grid.html' %} " name="property">All Property
                   <span class="bi bi-chevron-right"></span>
                 </a>
               </div>
@@ -588,8 +585,7 @@
             </div>
             <div class="w-body-a">
               <p class="w-text-a color-text-a">
-                Enim minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip exea commodo consequat duis
-                sed aute irure.
+                AlgoRent is a WebApp commited to conducting real-estate transactions with crypto. We hope to eliminate the overhead of the current system with a faster, secure, verifiable, unforgeable system.
               </p>
             </div>
             <div class="w-footer-a">
@@ -674,16 +670,13 @@
           <nav class="nav-footer">
             <ul class="list-inline">
               <li class="list-inline-item">
-                <a href="#">Home</a>
-              </li>
-              <li class="list-inline-item">
-                <a href="#">About</a>
+                <a href="#" name = "bottom" id="bottom">Home</a>
               </li>
               <li class="list-inline-item">
                 <a href="#">Property</a>
               </li>
               <li class="list-inline-item">
-                <a href="#">Blog</a>
+                <a href="#">About</a>
               </li>
               <li class="list-inline-item">
                 <a href="#">Contact</a>
