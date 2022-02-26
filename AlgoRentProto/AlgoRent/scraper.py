@@ -14,7 +14,7 @@ def scrape_remax(url):
 	for a in soup.find_all('a', href=True):
 		if("home-details" in a['href']):
 			href_stats.append(base_url+a['href'])
-	return href_stats[0:10] #Give a portion first -> gives independed sites
+	return href_stats[0:15] #Give a portion first -> gives independed sites
 
 def process_remax_page(url):
 	page = requests.get(url)
@@ -29,12 +29,14 @@ def process_remax_page(url):
 	#soup_string = str(soup)
 	for img in soup.find_all("img"):
 		str_img = str(img)
-		if("aws." in str(img)):
+		#print("Images: ", img)
+		if("aws." in str(img) or "cloud" in str(img)):
 			img_split = str_img.split(" ") #Need this?
 			img_stripped = str(list(filter(lambda k: 'data-src' in k, img_split)))#Needs this?
 			img_url = img_stripped[img_stripped.find("http"):len(img_stripped)-3]
-			image.append(img_url)#We only need the first
-			break
+			if(len(img_url) > 10):
+				image.append(img_url)#We only need the first
+				break
 	info_list["image"] = image
 	info_list["address"] =  address
 	return info_list
@@ -51,14 +53,14 @@ def get_complete_addr_link(address): #format of address : "country" "state" "cit
 	try:
 		geolocator = Nominatim(user_agent="html")
 		possible_addr = address
-		if(not isinstance(address,str)):
-			country = address["country"]
-			state = address["state"]
-			city = address["city"]
-			zip = address["zip"]
-			possible_addr = country + " " + state + " " + city + " " + zip
+		state = address["state"]
+		city = address["city"]
+		zip = address["zip"]
+		possible_addr = city + " " + state  + " " + zip
+		#print("ADDRESS IS: ", possible_addr)
 		location = geolocator.geocode(possible_addr, addressdetails=True, language="en", timeout=9000)
-		print("The Complete Address is: ", location.raw['address'])
+		#final_location = location.raw["address"]
+		#print("The Complete Address is: ", location.raw['address'])
 		return location.raw['address']
 	except Exception as err:
 		print("Error Encountered: ", err)
@@ -67,13 +69,19 @@ def get_complete_addr_link(address): #format of address : "country" "state" "cit
 def house_info_from_address(address): #Initial: "Country, State, City, Zip" format of address : {"country": ,"state": , "city": , "zip": }
 	if(isinstance(address,str)):
 		#convert to dict
-		stripped_address = address.replace(",","").replace("  ", " ") #properly format string
-		print("Address is: ",stripped_address) 
-		address = stripped_address
+		stripped_address = address.replace(",","").replace("  ", " ").split(" ") #properly format string
+		if(len(stripped_address) < 3):
+			for i in range(3-len(stripped_address)):
+				stripped_address.append("")
+		dict_address = {"zip":stripped_address[-1], "city":stripped_address[-2], "state":stripped_address[-3]}
+		dict_address["country"] = "US"
+		address = dict_address
+		#ReCheck this later (recheck)
 	comp_address = get_complete_addr_link(address)
-	state = comp_address["state"].replace(" ", "+")
-	city = comp_address["city"].replace(" ", "+")
-	zip = comp_address["postcode"].replace(" ", "+")
+	state = comp_address["state"].replace(" ", "+") if "state" in comp_address else address["state"]
+	city = comp_address["city"].replace(" ", "+") if "city" in comp_address else address["city"]
+	#zip = comp_address["postcode"].replace(" ", "+")
+	zip = address["zip"] if address["zip"] != None and len(address["zip"]) == 5 else comp_address["postcode"].replace(" ", "+")
 	BASE_URL = "https://www.remax.com"
 	EXTENDED_URL = "/homes-for-sale/"+state+"/"+city+"/zip/"+zip
 	SEARCH_URL = BASE_URL+EXTENDED_URL
@@ -83,7 +91,7 @@ def house_info_from_address(address): #Initial: "Country, State, City, Zip" form
 	house_info = []
 	for link in display_page_links:
 		house_info.append(process_remax_page(link))
-	print("Images Gathered: ", house_info)
+	#print("Images Gathered: ", house_info)
 	return house_info
 
 
@@ -107,3 +115,5 @@ if(len(args) > 0):
 #Address: <title> tag -> |
 
 #house_info_from_address("US, NY, Buffalo, 14212")
+address = {"country": "US", "state": "New York", "city" : "Jamaica", "zip":"11432"}
+#get_complete_addr_link(address)

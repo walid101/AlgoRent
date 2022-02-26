@@ -159,11 +159,11 @@
             </div>
           </li>
           <li class="nav-item">
-            <a class="nav-link " href=" #bottom ">Contact</a>
+            <a class="nav-link " href="#bottom">Contact</a>
           </li>
         </ul>
       </div>
-
+      
       <button type="button" class="btn btn-b-n navbar-toggle-box navbar-toggle-box-collapse" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01">
         <i class="bi bi-search"></i>
       </button>
@@ -230,9 +230,7 @@
               </div>
               <div class="card-body-c">
                 <p class="content-c">
-                  Sed porttitor lectus nibh. Cras ultricies ligula sed magna dictum porta. Praesent sapien massa,
-                  convallis a pellentesque
-                  nec, egestas non nisi.
+                  Purchase real estate with Crypto. Legal Contracts and Signing is handled by our Automated Smart Contract 
                 </p>
               </div>
               <div class="card-footer-c">
@@ -249,14 +247,12 @@
                   <span class="bi bi-calendar4-week"></span>
                 </div>
                 <div class="card-title-c align-self-center">
-                  <h2 class="title-c">Loans</h2>
+                  <h2 class="title-c">Dashboard</h2>
                 </div>
               </div>
               <div class="card-body-c">
                 <p class="content-c">
-                  Nulla porttitor accumsan tincidunt. Curabitur aliquet quam id dui posuere blandit. Mauris blandit
-                  aliquet elit, eget tincidunt
-                  nibh pulvinar a.
+                  View Bookmarked Houses and Buy rates. Compare Property Tax Value and Inflation Rates
                 </p>
               </div>
               <div class="card-footer-c">
@@ -278,9 +274,7 @@
               </div>
               <div class="card-body-c">
                 <p class="content-c">
-                  Sed porttitor lectus nibh. Cras ultricies ligula sed magna dictum porta. Praesent sapien massa,
-                  convallis a pellentesque
-                  nec, egestas non nisi.
+                  Place a Listing for a House. Choose Transaction Currency and Contract Details
                 </p>
               </div>
               <div class="card-footer-c">
@@ -379,21 +373,20 @@
                 <h2 class="title-a">Deep Search</h2>
               </div>
               <div class="title-link">
-                <a href=" {% static 'AlgoRent/blog-grid.html' %} ">All News
+                <a href="#property">All News
                   <span class="bi bi-chevron-right"></span>
                 </a>
               </div>
             </div>
           </div>
         </div>
-
         <div id="news-carousel" class="swiper">
           <div class="swiper-wrapper">
-
+            {% for house in house_info_c %}
             <div class="carousel-item-c swiper-slide">
               <div class="card-box-b card-shadow news-box">
                 <div class="img-box-b">
-                  <img src=" {% static 'AlgoRent/assets/img/post-2.jpg' %} " alt="" class="img-b img-fluid">
+                  <img src=" {{house.image.0}} "  style = "width:600px;height:400px;overflow:hidden;" alt="" class="img-b img-fluid">
                 </div>
                 <div class="card-overlay">
                   <div class="card-header-b">
@@ -402,8 +395,7 @@
                     </div>
                     <div class="card-title-b">
                       <h2 class="title-2">
-                        <a href=" {% static 'AlgoRent/blog-single.html' %} ">House is comming
-                          <br> new</a>
+                        <a href="#">{{house.address}}
                       </h2>
                     </div>
                     <div class="card-date">
@@ -412,8 +404,9 @@
                   </div>
                 </div>
               </div>
-            </div><!-- End carousel item -->
-
+            </div>
+            {% endfor %}
+            <!--
             <div class="carousel-item-c swiper-slide">
               <div class="card-box-b card-shadow news-box">
                 <div class="img-box-b">
@@ -436,8 +429,7 @@
                   </div>
                 </div>
               </div>
-            </div><!-- End carousel item -->
-
+            </div>
             <div class="carousel-item-c swiper-slide">
               <div class="card-box-b card-shadow news-box">
                 <div class="img-box-b">
@@ -460,7 +452,7 @@
                   </div>
                 </div>
               </div>
-            </div><!-- End carousel item -->
+            </div>
 
             <div class="carousel-item-c swiper-slide">
               <div class="card-box-b card-shadow news-box">
@@ -484,8 +476,8 @@
                   </div>
                 </div>
               </div>
-            </div><!-- End carousel item -->
-
+            </div>
+            -->
           </div>
         </div>
 
@@ -494,6 +486,7 @@
     </section><!-- End Latest News Section -->
 
     <!-- ======= Testimonials Section ======= -->
+    <!--
     <section class="section-testimonials section-t8 nav-arrow-a">
       <div class="container">
         <div class="row">
@@ -535,7 +528,7 @@
                   </div>
                 </div>
               </div>
-            </div><!-- End carousel item -->
+            </div>
 
             <div class="carousel-item-a swiper-slide">
               <div class="testimonials-box">
@@ -563,14 +556,13 @@
                   </div>
                 </div>
               </div>
-            </div><!-- End carousel item -->
-
+            </div>
           </div>
         </div>
         <div class="testimonial-carousel-pagination carousel-pagination"></div>
 
       </div>
-    </section><!-- End Testimonials Section -->
+    </section>End Testimonials Section -->
 
   </main><!-- End #main -->
 
@@ -591,16 +583,17 @@
             <div class="w-footer-a">
               <ul class="list-unstyled">
                 <li class="color-a">
-                  <span class="color-text-a">Phone .</span> contact@example.com
+                  <span class="color-text-a">Phone .</span> +54 356 945234
                 </li>
                 <li class="color-a">
-                  <span class="color-text-a">Email .</span> +54 356 945234
+                  <span class="color-text-a">Email .</span> algorent@gmail.com
                 </li>
               </ul>
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-md-4 section-md-t3">
+
+        <div class="col-sm-12 col-md-4 section-md-t3" style="position:absolute; margin-left: 400px; margin-bottom: 500px;">
           <div class="widget-a">
             <div class="w-header-a">
               <h3 class="w-title-a text-brand">The Company</h3>
@@ -631,7 +624,7 @@
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-md-4 section-md-t3">
+        <div class="col-sm-12 col-md-4 section-md-t3" style="position:absolute; margin-left: 700px; margin-bottom: 500px;">
           <div class="widget-a">
             <div class="w-header-a">
               <h3 class="w-title-a text-brand">International sites</h3>
