@@ -131,7 +131,7 @@
         <span></span>
         <span></span>
       </button>
-      <a class="navbar-brand text-brand" href=" {% static 'AlgoRent/index.html' %} ">Algo<span class="color-b">Rent</span></a>
+      <a class="navbar-brand text-brand" href="#">Algo<span class="color-b">Rent</span></a>
 
       <div class="navbar-collapse collapse justify-content-center" id="navbarDefault">
         <ul class="navbar-nav">
@@ -189,7 +189,7 @@
                       <br>{{house.address}}
                     </h1>
                     <p class="intro-subtitle intro-price">
-                      <a href="#"><span class="price-a">rent | $ 12.000</span></a>
+                      <a href="#"><span class="price-a">{{house.price}} Algo</span></a>
                     </p>
                   </div>
                 </div>
@@ -298,7 +298,7 @@
                 <h2 class="title-a">Latest Properties</h2>
               </div>
               <div class="title-link">
-                <a href=" {% static 'AlgoRent/property-grid.html' %} " name="property">All Property
+                <a href="#" name="property">All Property
                   <span class="bi bi-chevron-right"></span>
                 </a>
               </div>
@@ -323,7 +323,7 @@
                     </div>
                     <div class="card-body-a">
                       <div class="price-box d-flex">
-                        <span class="price-a">rent | $ 12.000</span>
+                        <span class="price-a">{{house.price}} Algo</span>
                       </div>
                       <a href="#" class="link-a">Click here to view
                         <span class="bi bi-chevron-right"></span>

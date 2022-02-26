@@ -1,4 +1,5 @@
 from audioop import add
+from random import randrange
 from django.shortcuts import render
 import sys
 import os
@@ -32,5 +33,7 @@ async def home(request):
         except Exception as err:
             #error supression
             print(err)
+    for info_s in info:
+        info_s["price"] = randrange(85000, 800000)
     return render(request, 'home.html', context={"house_info_a": info[0:half], "house_info_b": info[half:2*half],
                                                  "house_info_c": info[2*half:]})
