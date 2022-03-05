@@ -1,5 +1,6 @@
 from audioop import add
 import re
+import time
 from webbrowser import get
 import requests
 from geopy.geocoders import Nominatim
@@ -16,9 +17,71 @@ def scrape_remax(url):
 			href_stats.append(base_url+a['href'])
 	return href_stats[0:15] #Give a portion first -> gives independed sites
 
+def scrape_remax_fast(url):
+	base_url = "https://www.remax.com"
+	page = requests.get(url)
+	soup = bs(page.content, "lxml")
+	href_stats = []
+	for a in soup.find_all('a', href=True):
+		if("home-details" in a['href']):
+			href_stats.append(base_url+a['href'])
+	return href_stats[0:15] #Give a portion first -> gives independed sites
+
+
 def process_remax_page(url):
 	page = requests.get(url)
 	soup = bs(page.content, "html.parser")
+	soup_string = str(soup)
+	info_list = {}
+	image = []
+	title = str(soup.find("title"))
+	address = title[7:title.find(" |")]
+	#price_start = soup_string.find("")
+	#print(address)
+	#soup_string = str(soup)
+	for img in soup.find_all("img"):
+		str_img = str(img)
+		#print("Images: ", img)
+		if("aws." in str(img) or "cloud" in str(img)):
+			img_split = str_img.split(" ") #Need this?
+			img_stripped = str(list(filter(lambda k: 'data-src' in k, img_split)))#Needs this?
+			img_url = img_stripped[img_stripped.find("http"):len(img_stripped)-3]
+			if(len(img_url) > 10):
+				image.append(img_url)#We only need the first
+				break
+	info_list["image"] = image
+	info_list["address"] =  address
+	return info_list
+
+
+def process_remax_page(url):
+	page = requests.get(url)
+	soup = bs(page.content, "html.parser")
+	soup_string = str(soup)
+	info_list = {}
+	image = []
+	title = str(soup.find("title"))
+	address = title[7:title.find(" |")]
+	#price_start = soup_string.find("")
+	#print(address)
+	#soup_string = str(soup)
+	for img in soup.find_all("img"):
+		str_img = str(img)
+		#print("Images: ", img)
+		if("aws." in str(img) or "cloud" in str(img)):
+			img_split = str_img.split(" ") #Need this?
+			img_stripped = str(list(filter(lambda k: 'data-src' in k, img_split)))#Needs this?
+			img_url = img_stripped[img_stripped.find("http"):len(img_stripped)-3]
+			if(len(img_url) > 10):
+				image.append(img_url)#We only need the first
+				break
+	info_list["image"] = image
+	info_list["address"] =  address
+	return info_list
+
+def process_remax_page_fast(url):
+	page = requests.get(url)
+	soup = bs(page.content, "lxml")
 	soup_string = str(soup)
 	info_list = {}
 	image = []
@@ -77,7 +140,8 @@ def house_info_from_address(address): #Initial: "Country, State, City, Zip" form
 		dict_address["country"] = "US"
 		address = dict_address
 		#ReCheck this later (recheck)
-	comp_address = get_complete_addr_link(address)
+	
+	comp_address = get_complete_addr_link(address) if "state" not in address or "city" not in address or "zip" not in address else address
 	state = comp_address["state"].replace(" ", "+") if "state" in comp_address else address["state"]
 	city = comp_address["city"].replace(" ", "+") if "city" in comp_address else address["city"]
 	#zip = comp_address["postcode"].replace(" ", "+")
@@ -86,11 +150,11 @@ def house_info_from_address(address): #Initial: "Country, State, City, Zip" form
 	EXTENDED_URL = "/homes-for-sale/"+state+"/"+city+"/zip/"+zip
 	SEARCH_URL = BASE_URL+EXTENDED_URL
 	#print("Search Link: ", SEARCH_URL)
-	display_page_links = scrape_remax(SEARCH_URL)
+	display_page_links = scrape_remax_fast(SEARCH_URL)
 	#print("Links Obtained: ", display_page_links)
 	house_info = []
 	for link in display_page_links:
-		house_info.append(process_remax_page(link))
+		house_info.append(process_remax_page_fast(link))
 	#print("Images Gathered: ", house_info)
 	return house_info
 
@@ -110,10 +174,20 @@ if(len(args) > 0):
 				 #data-src filter
 '''
 #process_remax_page("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
-#scrape_remax("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+'''
+start = time.time()
+scrape_remax("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+end = time.time()
+print("Time Taken Normal Parser: ", (end - start) * 1000)
+
+start = time.time()
+scrape_remax_fast("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+end = time.time()
+print("Time Taken FAST Parser: ", (end - start) * 1000)
+'''
 #Value: KEY WORD: value:"$
 #Address: <title> tag -> |
 
 #house_info_from_address("US, NY, Buffalo, 14212")
-address = {"country": "US", "state": "New York", "city" : "Jamaica", "zip":"11432"}
+#address = {"country": "US", "state": "New York", "city" : "Jamaica", "zip":"11432"}
 #get_complete_addr_link(address)
