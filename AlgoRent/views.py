@@ -3,6 +3,7 @@ from random import randrange
 from django.shortcuts import render
 import sys
 import os
+import time
 
 from numpy import half
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -20,7 +21,10 @@ async def home(request):
         try:
             base_string = request.GET.get('home_search')
             #print("Request is: ", base_string)
+            start = time.time()
             info = hs(base_string)
+            end = time.time()
+            print("Time Taken for PARSING is: ", 1000*(end - start), "ms")
             #print(info)
         except Exception as err:
             print(err)

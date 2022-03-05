@@ -17,42 +17,19 @@ def scrape_remax(url):
 			href_stats.append(base_url+a['href'])
 	return href_stats[0:15] #Give a portion first -> gives independed sites
 
-def scrape_remax_fast(url):
+def scrape_remax_fast(url, limit):
 	base_url = "https://www.remax.com"
 	page = requests.get(url)
 	soup = bs(page.content, "lxml")
 	href_stats = []
-	for a in soup.find_all('a', href=True):
+	all_links = soup.find_all('a', href=True)
+	for a in all_links:
 		if("home-details" in a['href']):
 			href_stats.append(base_url+a['href'])
-	return href_stats[0:15] #Give a portion first -> gives independed sites
-
-
-def process_remax_page(url):
-	page = requests.get(url)
-	soup = bs(page.content, "html.parser")
-	soup_string = str(soup)
-	info_list = {}
-	image = []
-	title = str(soup.find("title"))
-	address = title[7:title.find(" |")]
-	#price_start = soup_string.find("")
-	#print(address)
-	#soup_string = str(soup)
-	for img in soup.find_all("img"):
-		str_img = str(img)
-		#print("Images: ", img)
-		if("aws." in str(img) or "cloud" in str(img)):
-			img_split = str_img.split(" ") #Need this?
-			img_stripped = str(list(filter(lambda k: 'data-src' in k, img_split)))#Needs this?
-			img_url = img_stripped[img_stripped.find("http"):len(img_stripped)-3]
-			if(len(img_url) > 10):
-				image.append(img_url)#We only need the first
-				break
-	info_list["image"] = image
-	info_list["address"] =  address
-	return info_list
-
+			limit-=1
+		if(limit < 0):
+			break
+	return href_stats #Give a portion first -> gives independed sites
 
 def process_remax_page(url):
 	page = requests.get(url)
@@ -82,24 +59,32 @@ def process_remax_page(url):
 def process_remax_page_fast(url):
 	page = requests.get(url)
 	soup = bs(page.content, "lxml")
-	soup_string = str(soup)
 	info_list = {}
 	image = []
 	title = str(soup.find("title"))
 	address = title[7:title.find(" |")]
-	#price_start = soup_string.find("")
-	#print(address)
-	#soup_string = str(soup)
-	for img in soup.find_all("img"):
+	all_img = soup.find_all("img")
+	for img in all_img:
+		img_url = None
+		try:
+			img_url = img['data-src']
+		except Exception as ex:
+			pass
+		if(img_url is not None and len(img_url) > 10):
+			image.append(img_url)#We only need the first
+			break
+
+		'''
 		str_img = str(img)
-		#print("Images: ", img)
 		if("aws." in str(img) or "cloud" in str(img)):
+			print("Is this an img link? : ", img['data-src'])
 			img_split = str_img.split(" ") #Need this?
 			img_stripped = str(list(filter(lambda k: 'data-src' in k, img_split)))#Needs this?
 			img_url = img_stripped[img_stripped.find("http"):len(img_stripped)-3]
 			if(len(img_url) > 10):
 				image.append(img_url)#We only need the first
 				break
+		'''
 	info_list["image"] = image
 	info_list["address"] =  address
 	return info_list
@@ -150,7 +135,7 @@ def house_info_from_address(address): #Initial: "Country, State, City, Zip" form
 	EXTENDED_URL = "/homes-for-sale/"+state+"/"+city+"/zip/"+zip
 	SEARCH_URL = BASE_URL+EXTENDED_URL
 	#print("Search Link: ", SEARCH_URL)
-	display_page_links = scrape_remax_fast(SEARCH_URL)
+	display_page_links = scrape_remax_fast(SEARCH_URL, 15)
 	#print("Links Obtained: ", display_page_links)
 	house_info = []
 	for link in display_page_links:
@@ -173,7 +158,19 @@ if(len(args) > 0):
 				 #"BASE_URL + /homes-for-sale/<state>/<city>/zip/<zipcode>"
 				 #data-src filter
 '''
-#process_remax_page("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+#listA = process_remax_page_fast("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+
+'''
+start = time.time()
+listA = process_remax_page("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+end = time.time()
+print("time taken A: ", 1000*(end-start))
+
+start = time.time()
+listB = process_remax_page_fast("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
+end = time.time()
+print("time taken fast: ", 1000*(end-start), " and the link is: ", listB)
+'''
 '''
 start = time.time()
 scrape_remax("https://www.remax.com/ny/jamaica/home-details/84-50-169th-st-102-jamaica-ny-11432/9637000322339336887/M00000489/3378032")
