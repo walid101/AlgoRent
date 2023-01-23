@@ -5,7 +5,6 @@ import sys
 import os
 import time
 
-from numpy import half
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.dirname(SCRIPT_DIR))
 from AlgoRent.scraper import house_info_from_address as hs
